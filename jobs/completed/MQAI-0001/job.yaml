@@ -1,7 +1,7 @@
 id: MQAI-0001
 title: Repo Cartography (read-only)
-status: pending            # pending | running | review | approved | failed
-risk_tier: LOW             # provisional; set authoritatively by risk_tier_assignment
+status: completed          # pending | running | review | approved | failed
+risk_tier: HIGH            # set by risk_tier_assignment (critical_files.md `**` seed); job was read-only
 consensus_mode: low        # low = Codex build -> Claude review
 
 scope:
