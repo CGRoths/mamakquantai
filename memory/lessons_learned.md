@@ -4,6 +4,31 @@ What worked / what didn't, per job. Append-only; newest at top.
 
 ---
 
+## MQAI-0002 — Security Hygiene Audit (read-only)
+
+- **What worked:**
+  - Metadata-only auditing proved you can find a CRITICAL exposure (committed PyPI recovery codes)
+    **without ever opening the secret file** — `git ls-files`, `git check-ignore`, `git log -- <path>`,
+    and counts-only `git grep` were sufficient. `secret_content_read: false` held for all 8 items.
+  - Independent reviewer re-ran the git metadata checks and confirmed every severity claim; the
+    counts-only pattern scan kept values out of MQAI output (verified by a second scan).
+  - Clean separation of audit vs remediation: approval accepted findings but authorized nothing
+    destructive; remediation was pushed to a dedicated HIGH-tier job (MQAI-0002B).
+- **What didn't / friction:**
+  - Shell delimiter bug: `${entry##*:}` ate the `C:` drive letter on Windows paths. Use `|` (or
+    another non-colon delimiter) when packing `name:path` pairs for Windows.
+  - Same V0 gap as MQAI-0001: scripted `write_scope_check`/`secret_scan` ran with empty input sets,
+    so their pass is weak — manual verification remained necessary.
+  - History check is filename-scoped only; a deep-history content scan (gitleaks/trufflehog) is still
+    needed and is deferred to a follow-up.
+- **Change to process:**
+  - Standardize a Windows-safe path-passing convention in orchestrator/audit scripts.
+  - Add a reusable read-only "secret hygiene" checklist (tracked-file filename patterns, gitignore
+    coverage, history-by-filename, counts-only pattern scan) as an MQAI skill.
+  - Wire real touched-path/write-set collection into the gates (carried over from MQAI-0001).
+
+---
+
 ## MQAI-0001 — Repo Cartography (read-only)
 
 - **What worked:**

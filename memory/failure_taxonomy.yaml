@@ -22,4 +22,13 @@ categories:
   - fabrication                # output asserted unverifiable claims as fact
   - promotion_attempt          # agent attempted self-promotion to repo_control
 
-failures: []   # appended as jobs fail
+failures:
+  # NOTE: MQAI-0002 (the audit job) did NOT fail. This entry records a CONFIRMED secret-leak
+  # condition detected in a product repo, logged here because secret_leak is a tracked category
+  # and remediation is deferred. Detection was filename/metadata only; contents never read.
+  - job_id: MQAI-0002
+    category: secret_leak
+    gate: secret_hygiene_audit
+    detail: "mqengine tracks PyPI-Recovery-Codes-*.txt in HEAD and git history (1 commit); repo has no .gitignore. Filename/metadata only; secret_content_read=false."
+    timestamp: "2026-07-09"
+    resolution: "Audit-only. Remediation deferred to HIGH-tier job MQAI-0002B. PyPI recovery-code rotation pending by Cray (incident priority)."

@@ -1,0 +1,87 @@
+id: MQAI-0002
+title: Security Hygiene Audit (read-only)
+status: completed          # pending | running | review | approved | failed
+risk_tier: HIGH            # set by risk_tier_assignment; secrets/auth HIGH-risk area; job was read-only audit
+consensus_mode: low        # low = builder audit -> Claude review; read-only, no remediation
+
+scope:
+  mode: read-only
+  product_repo_writes: false
+  remediation: false        # audit only; NO fixes in this job
+  allowed_actions: [read, audit, git-metadata-inspection]
+  forbidden_actions:
+    - refactor
+    - delete_files
+    - remediation
+    - open_secret_files       # .env / .env.local / recovery-code / key / token / credential files
+    - print_secret_values
+    - copy_secret_contents
+    - write_product_repo
+
+targets:
+  - repo: mqnode_test2
+    path: C:\MAMAKQUANT\mqnode_test2
+    scope: full
+  - repo: mqnode_cloud
+    path: C:\MAMAKQUANT\mqnode_cloud
+    scope: full
+  - repo: mqengine
+    path: C:\MAMAKQUANT\mqengine_lib_full
+    scope: full
+  - repo: mamakquantchainintel
+    path: C:\MAMAKQUANT\mamakquantchain\mqchain-console
+    scope: mqchain-console-only
+
+audit_checks:
+  - tracked_secret_risk_files       # git-tracked files matching secret-risk filename patterns
+  - secret_pattern_scan             # scan tracked NON-secret files for secret-like patterns (counts/locations only)
+  - env_recovery_tracking           # are .env / .env.local / recovery-code files tracked?
+  - gitignore_coverage              # does .gitignore cover the secret-risk files?
+  - history_filename_only           # secret-risk files in git history — by FILENAME only, never content
+
+constraints:
+  - Never open, read, or display the contents of any secret file.
+  - Report secret findings by path + pattern name + location, never by value.
+  - No secret contents copied into MQAI output.
+
+builder: codex
+reviewer: claude
+synthesizer: none
+
+write_allow:
+  - jobs/active/MQAI-0002/output/**
+review_write_allow:
+  - jobs/active/MQAI-0002/review/**
+
+deliverables:
+  - output/security_audit.md
+  - output/secret_risk_inventory.json
+  - output/recommended_remediation_plan.md
+
+secret_risk_inventory_fields:
+  - repo
+  - file_path
+  - exists
+  - git_tracked
+  - gitignored
+  - risk_level
+  - reason
+  - recommended_action
+  - secret_content_read   # MUST be false for every entry
+
+eval_gates:
+  - risk_tier_assignment
+  - write_scope_check
+  - secret_scan
+  - cross_layer_violation_check
+  # formula_diff_check / migration_required_check / lookahead_safety_check: n/a (read-only audit)
+
+promotion:
+  target: none              # findings feed a future remediation job; no repo_control promotion target
+  requires: [evals_pass, claude_approve, cray_approve]
+  agent_may_promote: false
+
+memory_updates:
+  - memory/decisions.md
+  - memory/lessons_learned.md
+  - memory/failure_taxonomy.yaml   # if any tracked-secret finding is confirmed
