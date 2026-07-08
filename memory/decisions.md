@@ -4,6 +4,26 @@ Durable decisions and their rationale. Append-only; newest at top.
 
 ---
 
+## 2026-07-09 — MQAI-0002B approved (plan-only) & closed
+
+- **MQAI-0002B (Security Remediation Plan) closed with `DECISION: approve_plan_only`.** Moved to
+  `jobs/completed/`. The remediation plan, proposed file changes, and validation checklist are
+  accepted **as a plan** — **execution is NOT authorized** under this job.
+- **Full HIGH-tier consensus recorded:** scripted gates pass; Claude v1 request_changes (F1/F2/F3) →
+  builder fixes → Claude v2 approve; GPT synthesis `approve_plan_only`, EXECUTION_ALLOWED_NOW: no;
+  Cray decision plan-only.
+- **Review caught a real defect:** the v1 validation check `grep -c recovery` was a case-sensitive
+  false pass against the capital-"R" filename; fixed to case-insensitive/anchored matching. Also
+  added explicit untracking of already-tracked `.pyc`/`__pycache__`/`egg-info` (gitignore alone does
+  not untrack committed files), and narrowed broad secret globs.
+- **Mandated next job:** **MQAI-0002C — Security Remediation Execution** (separate HIGH-tier). Must
+  carry exact write paths, exact commands, validation checks (incl. the case-insensitive recovery
+  check), rollback notes, eval gates, Claude review of the executed diff, GPT synthesis, and Cray
+  approval before ANY product-repo change is committed. **Not scaffolded yet** (per Cray).
+- PyPI recovery codes already rotated by Cray; history purge (RP7) remains optional/post-rotation.
+
+---
+
 ## 2026-07-09 — MQAI-0002 approved & closed (audit accepted, no remediation)
 
 - **MQAI-0002 (Security Hygiene Audit) Cray-approved and moved to `jobs/completed/`.** Read-only;

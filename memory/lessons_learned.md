@@ -4,6 +4,29 @@ What worked / what didn't, per job. Append-only; newest at top.
 
 ---
 
+## MQAI-0002B — Security Remediation Plan (planning-only, HIGH-tier)
+
+- **What worked:**
+  - The HIGH-tier consensus chain earned its keep: independent review caught a **false-pass
+    validation check** (`grep -c recovery` is case-sensitive vs a capital-"R" filename) that would
+    have "confirmed" remediation regardless of outcome. Live re-verification (`grep -c`=0 vs
+    `grep -ic`=1) proved it before it could mislead an execution job.
+  - request_changes → builder fix → v2 approve → GPT synthesis → Cray plan-only approval is a clean,
+    auditable loop. Keeping v1 and v2 reviews side-by-side preserved provenance.
+  - Firm plan/execution split: approving a plan never authorizes the writes; execution is pushed to a
+    named, separately-authorized job (MQAI-0002C).
+- **What didn't / friction:**
+  - Same class of bug recurred in my own re-verify (`grep -c recovery`) — case sensitivity on Windows
+    filenames is an easy trap; standardize case-insensitive/anchored matching in all secret checks.
+  - `.gitignore` misconception (that it untracks committed files) had to be explicitly corrected in
+    the plan — worth encoding as a standing rule.
+- **Change to process:**
+  - Add "case-insensitive + anchored matching" and "`.gitignore` does not untrack committed files"
+    to the security-hygiene skill/checklist.
+  - Execution jobs must always ship rollback notes + before/after `git ls-files` capture.
+
+---
+
 ## MQAI-0002 — Security Hygiene Audit (read-only)
 
 - **What worked:**

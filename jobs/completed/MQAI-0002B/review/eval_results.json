@@ -1,0 +1,27 @@
+﻿[
+    {
+        "gate":  "risk_tier_assignment",
+        "status":  "pass",
+        "tier":  "HIGH",
+        "matched":  [
+                        "mqnode_test2::**",
+                        "mqnode_cloud::**",
+                        "mqengine::**",
+                        "mamakquantchainintel::**"
+                    ]
+    },
+    {
+        "gate":  "write_scope_check",
+        "status":  "pass",
+        "offending_paths":  [
+
+                            ]
+    },
+    {
+        "gate":  "secret_scan",
+        "status":  "pass",
+        "hits":  [
+
+                 ]
+    }
+]

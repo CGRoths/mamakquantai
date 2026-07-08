@@ -4,10 +4,18 @@
 > edited, no file deleted, no git history rewritten, no commit/push. No secret file was opened.
 > Source of findings: MQAI-0002 (approved, closed). Date: 2026-07-09.
 
+## Revision note
+- **Rev 2 (2026-07-09): plan-correction only.** Updated after Claude review (F1/F2/F3): recovery-file
+  validation made case-insensitive, explicit untracking of already-tracked generated artifacts added,
+  and `.gitignore` globs narrowed. No remediation executed; no product repo touched.
+
 ## Precondition status
 - **PyPI recovery codes: ROTATED by Cray (done).** The account-takeover incident action is complete,
   so the git-side cleanup below is no longer time-critical — but the exposed file must still be
   removed and prevented from recurring.
+- This job remains **planning / patch-proposal only**. Any actual product-repo change (RP1, RP2,
+  RP2G, RP3, and any RP7) requires a **separate HIGH-tier execution job** with its own eval gates,
+  Claude review of the executed diff, and explicit Cray authorization.
 
 ## Remediation items (proposed — execution deferred to a separate HIGH-tier job)
 
@@ -20,8 +28,17 @@
 - **Boundary:** product-repo write → out of scope here; belongs to the execution job.
 
 ### RP2 — Add `.gitignore` to `mqengine`
-- **Action (proposed):** create `.gitignore` with coverage below (see `proposed_file_changes.md`).
-- **Effect:** prevents recurrence of committed secrets and cleans up tracked bytecode noise.
+- **Action (proposed):** create `.gitignore` with narrow, scoped coverage (see
+  `proposed_file_changes.md` Change 1). Anchored recovery pattern `/PyPI-Recovery-Codes*.txt`; no
+  broad `*recovery*` / `*credential*` / `*_token*` globs.
+- **Effect:** prevents recurrence of committed secrets/artifacts (FUTURE tracking only).
+
+### RP2G — Untrack already-tracked generated artifacts in `mqengine`
+- **Why:** `.gitignore` does NOT untrack files already committed. `mqengine` currently tracks
+  generated artifacts (verified: 11 `.pyc`, 5 `mqengine.egg-info/`).
+- **Action (proposed, execution job only):** `git rm --cached -r` the tracked `__pycache__/`,
+  `*.pyc`, and `mqengine.egg-info/` entries (index-only; no disk deletion). See
+  `proposed_file_changes.md` Change 2b.
 
 ### RP3 — Add `.gitignore` to `mqnode_cloud`
 - **Action (proposed):** create `.gitignore` with the same secret/keys/env coverage (preventive; no
@@ -52,16 +69,17 @@
 
 ## Sequencing (for the future execution job)
 ```
-RP2 (.gitignore mqengine)  →  RP1 (git rm --cached recovery file)  →  commit
+RP2 (.gitignore mqengine)  →  RP1 (git rm --cached recovery file)
+                           →  RP2G (git rm --cached generated artifacts)  →  commit
 RP3 (.gitignore mqnode_cloud)            [independent]
 RP4, RP5 (confirm env files)             [read-only, anytime]
-RP6 (re-audit)                           [after RP1–RP3]
-RP7 (optional history purge)             [only if separately authorized]
+RP6 (re-audit; case-insensitive recovery check)   [after RP1–RP3, RP2G]
+RP7 (optional history purge)             [only if separately authorized; post-rotation, LOW priority]
 ```
 
 ## Consensus & authorization
 - This is a HIGH-tier job (`consensus_mode: high`): Codex plan + Claude plan + GPT synthesis +
   deterministic gates + Cray approval.
-- **Approving this job approves the PLAN only.** Execution (RP1–RP3, RP6, and any RP7) is a
-  **separate** HIGH-tier execution job requiring its own Cray authorization, because every step is a
-  product-repo write.
+- **Approving this job approves the PLAN only.** Execution (RP1, RP2, RP2G, RP3, RP6, and any RP7)
+  is a **separate** HIGH-tier execution job requiring its own Cray authorization, because every step
+  is a product-repo write.

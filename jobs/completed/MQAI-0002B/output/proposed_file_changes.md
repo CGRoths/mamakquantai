@@ -9,8 +9,12 @@
 
 Path: `C:\MAMAKQUANT\mqengine_lib_full\.gitignore` (does not exist today)
 
-Proposed content:
+Proposed content (narrow, scoped patterns — no broad `*recovery*` / `*credential*` / `*_token*`):
 ```gitignore
+# --- Recovery codes (anchored to the known filename shape) ---
+/PyPI-Recovery-Codes*.txt
+/pypi-recovery-codes*.txt
+
 # --- Secrets / credentials (never commit) ---
 .env
 .env.*
@@ -19,12 +23,8 @@ Proposed content:
 *.key
 *.p12
 *.pfx
-*.keystore
-id_rsa
-id_dsa
-*_token*
-*credential*
-*recovery*
+*.secret
+*.token
 
 # --- Python build / cache noise ---
 __pycache__/
@@ -37,8 +37,12 @@ dist/
 ```
 
 Notes:
-- `*recovery*` ensures the rotated recovery-codes filename pattern can never be re-committed.
-- The Python cache/egg-info lines also address the tracked `.pyc` bytecode noted in MQAI-0001.
+- Recovery-code globs are **anchored** (`/PyPI-Recovery-Codes*.txt`) rather than a broad `*recovery*`,
+  so they cannot accidentally ignore legitimately-named source files.
+- Secret globs are scoped to concrete extensions (`.pem/.key/.p12/.pfx/.secret/.token`) instead of
+  substring matches like `*_token*` / `*credential*`.
+- The Python cache/egg-info lines prevent FUTURE tracking; already-tracked artifacts are handled by
+  Change 2b (`.gitignore` does not untrack existing files).
 
 ---
 
@@ -51,6 +55,26 @@ git rm --cached "PyPI-Recovery-Codes-CrayNg05-2026-04-16T20_23_27.926753.txt"
 - `--cached` removes it from the index only; the local file stays on disk (this job never deletes).
 - Cray to relocate/remove the local copy manually out-of-band.
 - Codes already rotated → the local copy is inert, but should not live inside a repo working tree.
+- Validation of untracking is CASE-INSENSITIVE (see `validation_checklist.md` RP1); a
+  case-sensitive `grep -c recovery` is a false pass against the capital-"R" filename.
+
+---
+
+## Change 2b — `mqengine`: untrack already-tracked generated artifacts (INDEX CHANGE, not deletion)
+
+`.gitignore` (Change 1) only prevents FUTURE tracking. `mqengine` **already tracks** generated
+artifacts (verified: 11 `.pyc`, 5 `mqengine.egg-info/` entries), so they must be untracked
+explicitly in the execution job.
+
+Proposed command (EXECUTION JOB ONLY — not run now; index-only, no disk deletion):
+```powershell
+$generated = git ls-files |
+  Select-String -Pattern '(^|/)(__pycache__/|.*\.pyc$|mqengine\.egg-info/)' |
+  ForEach-Object { $_.Line }
+if ($generated.Count -gt 0) { git rm --cached -r -- $generated }
+```
+- Untracks bytecode / cache / build-metadata that should never have been committed.
+- Files remain on disk; only the git index is changed. No deletion.
 
 ---
 
@@ -58,7 +82,7 @@ git rm --cached "PyPI-Recovery-Codes-CrayNg05-2026-04-16T20_23_27.926753.txt"
 
 Path: `C:\MAMAKQUANT\mqnode_cloud\.gitignore` (does not exist today)
 
-Proposed content:
+Proposed content (narrow, scoped patterns):
 ```gitignore
 # --- Secrets / credentials (never commit) ---
 .env
@@ -68,12 +92,8 @@ Proposed content:
 *.key
 *.p12
 *.pfx
-*.keystore
-id_rsa
-id_dsa
-*_token*
-*credential*
-*recovery*
+*.secret
+*.token
 
 # --- Python cache noise ---
 __pycache__/
@@ -85,7 +105,9 @@ data/*
 ```
 
 Notes:
-- Preventive only — no secret present today. `data/` kept as an empty tracked dir via `.gitkeep`.
+- Preventive only — no secret present today; no already-tracked artifacts to untrack here.
+- Scoped extension globs (no broad `*_token*` / `*credential*` substring matches).
+- `data/` kept as an empty tracked dir via `.gitkeep`.
 
 ---
 

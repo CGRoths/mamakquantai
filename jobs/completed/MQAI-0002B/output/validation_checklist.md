@@ -10,14 +10,45 @@
 - [ ] Working on a branch, not a protected mainline, in each product repo.
 
 ## RP1 — recovery file untracked (`mqengine`)
-- [ ] `git ls-files | grep -c recovery` → **0** (no longer tracked).
-- [ ] Local file, if still present, is inert (codes rotated) — relocate/remove out-of-band.
-- [ ] `git check-ignore "<recovery filename>"` → ignored (matched by `*recovery*`).
+> The tracked filename has a capital "R" (`PyPI-Recovery-Codes-...`). A case-sensitive
+> `grep -c recovery` returns 0 even while the file IS tracked — a false pass. Use a
+> CASE-INSENSITIVE / anchored match.
+- Check (PowerShell):
+  ```powershell
+  (git ls-files | Select-String -Pattern '(?i)PyPI-Recovery-Codes.*\.txt').Count
+  ```
+  - before remediation: **>= 1**
+  - after remediation execution: **0**
+- Check (Git Bash alternative):
+  ```bash
+  git ls-files | grep -Ei 'PyPI-Recovery-Codes.*\.txt'   # matches before, empty after
+  ```
+- [ ] Count is **>= 1 before** and **0 after** the execution job runs `git rm --cached`.
+- [ ] Local file, if still present, is inert (codes already rotated) — relocate/remove out-of-band.
+- [ ] `git check-ignore "PyPI-Recovery-Codes-2026.txt"` (any sample name) → ignored, matched by the
+      anchored pattern `/PyPI-Recovery-Codes*.txt` (NOT a broad `*recovery*`).
 
 ## RP2 — `.gitignore` added (`mqengine`)
 - [ ] `.gitignore` exists at repo root.
 - [ ] `git check-ignore .env` → ignored; `git check-ignore .env.example` → NOT ignored (still tracked).
-- [ ] `git ls-files '*.pyc' | wc -l` → 0 after `git rm --cached` cleanup (bytecode untracked).
+> Note: `.gitignore` only prevents FUTURE tracking. It does NOT untrack files already committed.
+> Already-tracked generated artifacts must be explicitly untracked — see RP2G.
+
+## RP2G — untrack already-tracked generated artifacts (`mqengine`)
+`mqengine` currently tracks generated artifacts (verified during review: 11 `.pyc`,
+5 `mqengine.egg-info/` entries). `.gitignore` alone will not remove them; the execution job must
+untrack them explicitly (index-only; no disk deletion).
+- Proposed command (EXECUTION JOB ONLY — do NOT run in a planning job):
+  ```powershell
+  $generated = git ls-files |
+    Select-String -Pattern '(^|/)(__pycache__/|.*\.pyc$|mqengine\.egg-info/)' |
+    ForEach-Object { $_.Line }
+  if ($generated.Count -gt 0) { git rm --cached -r -- $generated }
+  ```
+- Validation AFTER execution:
+  - [ ] `git ls-files | grep -Ei '\.pyc$'` → empty.
+  - [ ] `git ls-files | grep -Ei '__pycache__/'` → empty.
+  - [ ] `git ls-files | grep -Ei 'mqengine\.egg-info/'` → empty.
 
 ## RP3 — `.gitignore` added (`mqnode_cloud`)
 - [ ] `.gitignore` exists at repo root.

@@ -1,6 +1,7 @@
 id: MQAI-0002B
 title: Security Remediation Plan and Patch Proposal
-status: pending            # pending | running | review | approved | failed
+status: completed          # pending | running | review | approved | failed
+# Closed 2026-07-09 as approve_plan_only (Cray). Execution deferred to MQAI-0002C.
 risk_tier: HIGH            # secrets/auth + git-history considerations = HIGH
 consensus_mode: high       # HIGH: Codex plan + Claude plan + GPT synthesis + gates + Cray approval
 
