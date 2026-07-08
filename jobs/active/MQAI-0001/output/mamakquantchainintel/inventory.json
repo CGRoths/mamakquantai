@@ -1,0 +1,67 @@
+{
+  "repo": "mamakquantchainintel",
+  "scope": "mqchain-console only",
+  "source_path": "C:\\MAMAKQUANT\\mamakquantchain\\mqchain-console",
+  "remote": "github.com/CGRoths/mamakquantchainintel",
+  "layer": "MQCHAIN",
+  "parent_dependency": "none observed (parent repo has no shared source; only .git/.agents/.codex/README)",
+  "languages": ["TypeScript", "TSX", "SQL", "CSS"],
+  "framework": "Next.js 16 (app router) + React 19 + Drizzle ORM + NextAuth",
+  "entry_points": [
+    "src/app (Next.js app router)",
+    "scripts/seed.ts",
+    "scripts/compile-kv.ts",
+    "drizzle.config.ts"
+  ],
+  "db": {
+    "schema": "src/db/schema.ts",
+    "client": "src/db/client.ts",
+    "migrations": [
+      "drizzle/0000_low_maria_hill.sql",
+      "drizzle/0001_kv_index_manifest_shards.sql",
+      "drizzle/0002_freezing_nekra.sql",
+      "drizzle/0003_audit_trail_immutability.sql",
+      "drizzle/0004_source_verifications.sql",
+      "drizzle/0005_control_plane_check_constraints.sql"
+    ]
+  },
+  "api_route_groups": [
+    "audit-log", "batches", "candidates", "dictionaries", "dictionaries/versions",
+    "discovery/jobs", "evidence", "kv-builds", "metric-groups", "registry", "resolver",
+    "review/groups", "settings", "source-jobs", "auth/[...nextauth]"
+  ],
+  "ui_page_groups": [
+    "audit-log", "batches", "candidates", "dictionaries(categories,entities,key-prefixes,protocols,roles)",
+    "discovery/jobs", "intake/new", "kv-builds", "metric-groups", "registry", "resolver",
+    "review/groups", "settings", "source-jobs", "login"
+  ],
+  "domain_services": [
+    "approval-service", "audit-service", "batch-service", "candidate-service", "cex-flow-service",
+    "dashboard-service", "dictionary-service", "discovery-service", "evidence-service",
+    "kv-manifest-service", "metric-group-service", "registry-service", "resolver-service",
+    "review-service", "settings-service", "source-job-service", "service-utils"
+  ],
+  "validators": [
+    "approval", "batch", "candidate", "dictionary", "discovery", "evidence", "intake",
+    "kv-manifest", "metric-group", "registry", "resolver-api", "settings", "source-job"
+  ],
+  "high_risk_areas": [
+    "src/db/schema.ts (registry/label schema)",
+    "src/lib/mqchain/registry-*.ts (canonical registry)",
+    "drizzle/0003_audit_trail_immutability.sql",
+    "drizzle/0005_control_plane_check_constraints.sql",
+    "src/app/api/auth/[...nextauth] (auth/secrets)"
+  ],
+  "deps": ["next@16.2.10", "react@19", "react-dom@19", "drizzle-orm", "postgres", "next-auth", "bcryptjs", "zod", "papaparse", "radix-ui", "shadcn", "lucide-react", "tailwind-merge"],
+  "dev_deps": ["drizzle-kit", "vitest", "typescript", "eslint", "tailwindcss", "tsx"],
+  "config_files": ["package.json", "drizzle.config.ts", "next.config.ts", "tsconfig.json", "eslint.config.mjs", "postcss.config.mjs", "vitest.config.ts", "components.json", ".env.example"],
+  "secret_risk_files": [".env.local"],
+  "unmapped": [
+    "src/db/schema.ts table definitions (not deep-read)",
+    "SQL migration contents (audit immutability, check constraints)",
+    "NextAuth provider config (auth route not deep-read; secret-risk avoided)",
+    "entity ID minting / referential-integrity mechanism",
+    ".next/ and node_modules/ (excluded: build artifacts / deps)",
+    "src/components/* and src/app/* individual component files (grouped, not enumerated per-file)"
+  ]
+}

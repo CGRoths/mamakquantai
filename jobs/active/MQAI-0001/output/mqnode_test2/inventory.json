@@ -1,0 +1,52 @@
+{
+  "repo": "mqnode_test2",
+  "scope": "full",
+  "source_path": "C:\\MAMAKQUANT\\mqnode_test2",
+  "remote": "github.com/CGRoths/mqnode_test2",
+  "layer": "MQNODE",
+  "languages": ["Python", "SQL", "YAML", "Dockerfile", "nginx-conf", "Markdown"],
+  "entry_points": [
+    "mqnode/api/main.py",
+    "mqnode/workers/run_worker.py",
+    "mqnode/scripts/init_db.py",
+    "mqnode/scripts/seed_registry.py",
+    "mqnode/scripts/backfill_btc.py",
+    "mqnode/scripts/compose_prices.py",
+    "mqnode/scripts/ingest_price_source.py",
+    "mqnode/scripts/reconcile_btc.py"
+  ],
+  "key_modules": {
+    "api": ["mqnode/api/main.py", "mqnode/api/schemas.py", "mqnode/api/routes/btc_metrics.py", "mqnode/api/routes/checkpoints.py", "mqnode/api/routes/health.py", "mqnode/api/routes/internal_price_ingest.py", "mqnode/api/routes/registry.py"],
+    "chains_btc": ["mqnode/chains/btc/block_parser.py", "mqnode/chains/btc/ingest.py", "mqnode/chains/btc/listener.py", "mqnode/chains/btc/primitive_builder.py", "mqnode/chains/btc/reorg.py", "mqnode/chains/btc/rpc.py"],
+    "market_price": ["mqnode/market/price/composer.py", "mqnode/market/price/normalize.py", "mqnode/market/price/remote_ingest.py", "mqnode/market/price/checkpoints.py", "mqnode/market/price/registry.py", "mqnode/market/price/source_worker.py"],
+    "market_price_ws": ["mqnode/market/price/ws/candle_builder.py", "mqnode/market/price/ws/gap_detector.py", "mqnode/market/price/ws/gap_filler.py", "mqnode/market/price/ws/reconciler.py", "mqnode/market/price/ws/remote_push.py", "mqnode/market/price/ws/repository.py", "mqnode/market/price/ws/runtime.py", "mqnode/market/price/ws/state.py"],
+    "market_price_lifecycle": ["mqnode/market/price/lifecycle/manager.py", "mqnode/market/price/lifecycle/models.py", "mqnode/market/price/lifecycle/profiles.py", "mqnode/market/price/lifecycle/repository.py", "mqnode/market/price/lifecycle/runtime.py"],
+    "metrics_btc": ["mqnode/metrics/btc/fee/fee_metrics.py", "mqnode/metrics/btc/market/market_cap.py", "mqnode/metrics/btc/miner/miner_revenue.py", "mqnode/metrics/btc/network/nvt.py"],
+    "registry": ["mqnode/registry/metric_registry.py", "mqnode/registry/dynamic_loader.py", "mqnode/registry/dependency_validator.py"],
+    "db": ["mqnode/db/connection.py", "mqnode/db/repositories.py", "mqnode/db/migrations.py"],
+    "checkpoints": ["mqnode/checkpoints/checkpoint_service.py"],
+    "queue": ["mqnode/queue/jobs.py", "mqnode/queue/producer.py", "mqnode/queue/redis_conn.py"],
+    "config": ["mqnode/config/settings.py", "mqnode/config/logging_config.py"],
+    "workers": ["mqnode/workers/run_worker.py", "mqnode/workers/worker_base.py", "mqnode/workers/btc_market_worker.py", "mqnode/workers/btc_miner_worker.py", "mqnode/workers/btc_network_worker.py", "mqnode/workers/btc_primitive_worker.py"]
+  },
+  "exchange_price_adapters": ["binance", "bybit", "coinbase", "kraken", "okx", "bitstamp", "bitfinex", "gemini"],
+  "sql_migrations": [
+    "mqnode/db/sql_versions/0001_price_ws_lifecycle_schema.sql",
+    "mqnode/db/sql_versions/0001_runtime_readiness.sql",
+    "mqnode/db/sql_versions/0002_btc_price_lane_expansion.sql",
+    "mqnode/db/sql_versions/0003_price_source_hotplug_registry.sql",
+    "mqnode/db/sql_versions/0004_price_ws_quality_lane.sql",
+    "mqnode/db/sql_versions/0005_price_source_lifecycle.sql"
+  ],
+  "deps": ["fastapi", "uvicorn", "starlette", "pydantic", "pydantic-settings", "httpx", "requests", "psycopg2-binary", "redis", "rq", "croniter", "python-dotenv", "pytest"],
+  "config_files": ["pyproject.toml", "requirements.in", "requirements.txt", "docker-compose.yml", "docker-compose.dev.yml", "Dockerfile", "nginx/conf.d", ".env.example"],
+  "test_count_approx": 40,
+  "secret_risk_files": [".env"],
+  "unmapped": [
+    "docker-compose.yml service topology (not deep-read)",
+    "repo-root scripts/ contents",
+    "SQL table/column definitions (files listed, contents not deep-read)",
+    ".env contents (intentionally not read)",
+    "exact 10m-primitive schema and higher-interval derivation logic"
+  ]
+}

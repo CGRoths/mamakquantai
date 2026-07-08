@@ -1,0 +1,42 @@
+{
+  "repo": "mqnode_cloud",
+  "scope": "full",
+  "source_path": "C:\\MAMAKQUANT\\mqnode_cloud",
+  "remote": "github.com/CGRoths/mqnode_cloud",
+  "layer": "MQNODE",
+  "languages": ["Python", "YAML", "Dockerfile", "Markdown"],
+  "files": [
+    "binance_cloud_price_feeder.py",
+    "Dockerfile",
+    "docker-compose.yml",
+    "requirements.txt",
+    "README.md",
+    "data/.gitkeep",
+    ".env.example"
+  ],
+  "entry_points": ["binance_cloud_price_feeder.py"],
+  "functions": [
+    "utc_now", "parse_utc_datetime", "to_iso_z", "to_bucket_start_10m",
+    "getenv_str", "getenv_float", "getenv_int", "configure_logging",
+    "load_checkpoint", "save_checkpoint",
+    "binance_klines_url", "request_binance_5m_klines_once", "fetch_binance_5m_klines",
+    "kline_open_time_utc", "kline_close_time_utc", "aggregate_5m_to_10m",
+    "post_rows_to_mqnode", "resolve_start_utc", "run_once", "run_loop", "main"
+  ],
+  "constants": {
+    "SOURCE_NAME": "binance",
+    "TEN_MINUTES": "timedelta(minutes=10)",
+    "FIVE_MINUTES": "timedelta(minutes=5)",
+    "BINANCE_LIMIT": 1000,
+    "MAX_FETCH_RETRIES": 5
+  },
+  "deps": ["requests"],
+  "config_files": ["requirements.txt", "docker-compose.yml", "Dockerfile", ".env.example"],
+  "secret_risk_files": [],
+  "unmapped": [
+    "post_rows_to_mqnode target endpoint + payload schema (not deep-read)",
+    "checkpoint-after-successful-write ordering (not code-traced)",
+    "Dockerfile base image / Python version",
+    ".qodo/ tooling files (not product)"
+  ]
+}
