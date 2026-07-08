@@ -1,0 +1,45 @@
+id: <MQAI-XXXX>
+title: <short title>
+status: pending            # pending | running | review | approved | failed
+risk_tier: <LOW|MEDIUM|HIGH>   # provisional; set by risk_tier_assignment (path-derived)
+consensus_mode: <low|medium|high>
+
+scope:
+  mode: <read-only|write>
+  product_repo_writes: false        # V0: always false
+  allowed_actions: []
+  forbidden_actions: [refactor, schema_change, formula_change, merge, write_product_repo]
+
+targets:
+  - repo: <repo-name>
+    scope: <full|subfolder-only>
+
+builder: codex
+reviewer: claude
+synthesizer: <none|gpt>            # gpt only for HIGH consensus
+
+write_allow:
+  - jobs/active/<MQAI-XXXX>/output/**
+review_write_allow:
+  - jobs/active/<MQAI-XXXX>/review/**
+
+deliverables:
+  - output/...
+
+eval_gates:
+  - risk_tier_assignment
+  - write_scope_check
+  - secret_scan
+  - cross_layer_violation_check
+  - formula_diff_check         # include if code touches formulas
+  - migration_required_check   # include if code touches schema
+  - lookahead_safety_check     # include for research jobs
+
+promotion:
+  target: repo_control/<repo>/...
+  requires: [evals_pass, claude_approve, cray_approve]
+  agent_may_promote: false
+
+memory_updates:
+  - memory/decisions.md
+  - memory/lessons_learned.md

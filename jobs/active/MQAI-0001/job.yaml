@@ -1,0 +1,56 @@
+id: MQAI-0001
+title: Repo Cartography (read-only)
+status: pending            # pending | running | review | approved | failed
+risk_tier: LOW             # provisional; set authoritatively by risk_tier_assignment
+consensus_mode: low        # low = Codex build -> Claude review
+
+scope:
+  mode: read-only
+  product_repo_writes: false
+  allowed_actions: [read, map]
+  forbidden_actions: [refactor, schema_change, formula_change, merge, write_product_repo]
+
+targets:
+  - repo: mqnode_test2
+    scope: full
+  - repo: mqnode_cloud
+    scope: full
+  - repo: mqengine
+    scope: full
+  - repo: mamakquantchainintel
+    scope: mqchain-console-only   # do NOT map whole repo unless mqchain-console depends on parent files
+
+builder: codex
+reviewer: claude
+synthesizer: none
+
+write_allow:
+  - jobs/active/MQAI-0001/output/**
+review_write_allow:
+  - jobs/active/MQAI-0001/review/**
+
+deliverables:
+  - output/<repo>/map.md
+  - output/<repo>/inventory.json
+  - output/BUILD_NOTES.md
+
+eval_gates:
+  - risk_tier_assignment
+  - write_scope_check
+  - secret_scan
+  - cross_layer_violation_check
+  # formula_diff_check / migration_required_check / lookahead_safety_check:
+  # n/a for read-only mapping -> auto-pass with note
+
+promotion:
+  target: repo_control/<repo>/map.md
+  requires: [evals_pass, claude_approve, cray_approve]
+  agent_may_promote: false
+
+memory_updates:
+  - memory/decisions.md
+  - memory/lessons_learned.md
+
+blockers:
+  - LOCAL_ENV.md target repo clone paths (TBD)
+  - confirm mqchain-console parent-file dependency question

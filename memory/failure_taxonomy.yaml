@@ -1,0 +1,25 @@
+# Failure Taxonomy
+# Structured failure categories. Appended on every job failure.
+# STATUS: seed schema + starter categories.
+
+schema:
+  entry:
+    job_id: string          # e.g. MQAI-0001
+    category: string        # one of `categories` below
+    gate: string            # eval gate that caught it, if any
+    detail: string          # short description (no secrets)
+    timestamp: string       # ISO8601
+    resolution: string      # how it was handled
+
+categories:
+  - write_scope_violation      # agent wrote outside allowed job folder
+  - cross_layer_violation      # authored/claimed another layer's ownership
+  - secret_leak                # secret detected in output
+  - formula_drift              # unauthorized/unjustified formula change
+  - missing_migration          # schema change without migration
+  - lookahead_bias             # future info leaked into point-in-time logic
+  - scope_creep                # job exceeded declared scope
+  - fabrication                # output asserted unverifiable claims as fact
+  - promotion_attempt          # agent attempted self-promotion to repo_control
+
+failures: []   # appended as jobs fail
