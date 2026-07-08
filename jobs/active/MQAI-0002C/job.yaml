@@ -1,0 +1,89 @@
+id: MQAI-0002C
+title: Security Remediation Execution
+status: scaffolded         # scaffolded | pending | running | review | approved | executed | failed
+risk_tier: HIGH            # product-repo writes to secrets/auth surface + git-history = HIGH
+consensus_mode: high       # Codex plan + Claude plan + GPT synthesis + gates + Cray approval
+
+parent_jobs:
+  - MQAI-0002               # audit (findings source)
+  - MQAI-0002B              # approved remediation PLAN (approve_plan_only)
+
+context:
+  - PyPI recovery codes ALREADY ROTATED by Cray (incident action complete).
+  - This job EXECUTES the MQAI-0002B-approved plan against product repos.
+  - SCAFFOLD ONLY at creation. Execution is BLOCKED until Cray separately approves (see gating).
+
+scope:
+  mode: execution
+  product_repo_writes: true         # THIS job may write to product repos — but ONLY after gating
+  writes_gated: true                # no product-repo write until execution_authorized == true
+  execution_authorized: false       # flips to true ONLY on explicit Cray execution approval
+  secret_content_inspection: false  # never read/print/copy secret values
+  allowed_actions: [read, git-metadata-inspection, propose, "gated: git-index-write, gitignore-create, commit"]
+  forbidden_actions:
+    - product_repo_write_before_authorization
+    - open_secret_files
+    - print_secret_values
+    - copy_secret_contents
+    - delete_files                  # git rm --cached only (index); no disk deletion
+    - git_history_rewrite           # RP7 purge is a separate, separately-authorized action
+    - commit_before_full_consensus  # gates + Claude review + GPT synthesis + Cray approval
+    - push_before_authorization
+
+targets:
+  - repo: mqengine
+    path: C:\MAMAKQUANT\mqengine_lib_full
+    remote: github.com/CGRoths/mqengine
+    changes: [remove_tracked_recovery_file, add_gitignore, untrack_generated_artifacts]
+  - repo: mqnode_cloud
+    path: C:\MAMAKQUANT\mqnode_cloud
+    remote: github.com/CGRoths/mqnode_cloud
+    changes: [add_gitignore]
+  - repo: mqnode_test2
+    path: C:\MAMAKQUANT\mqnode_test2
+    remote: github.com/CGRoths/mqnode_test2
+    changes: [confirm_only]           # .env already ignored+untracked; NO change
+  - repo: mamakquantchainintel
+    path: C:\MAMAKQUANT\mamakquantchain\mqchain-console
+    remote: github.com/CGRoths/mamakquantchainintel
+    changes: [confirm_only]           # .env.local already ignored+untracked; NO change
+
+artifacts:
+  - allowed_writes.md
+  - forbidden_actions.md
+  - execution_plan.md
+  - validation_plan.md
+  - rollback_plan.md
+  - review/review_requirements.md
+
+builder: codex
+reviewer: claude
+synthesizer: gpt
+
+eval_gates:
+  - risk_tier_assignment
+  - write_scope_check
+  - secret_scan
+  - cross_layer_violation_check
+  - migration_required_check      # n/a expected (no schema), but run to confirm
+  # formula_diff_check / lookahead_safety_check: n/a (hygiene-only changes)
+
+gating:                            # ALL must be satisfied before ANY product-repo commit
+  order:
+    1: scaffold_reviewed
+    2: eval_gates_pass
+    3: claude_review_approve       # review of the PROPOSED execution + (later) the executed diff
+    4: gpt_synthesis_approve
+    5: cray_execution_approval     # explicit, separate from the MQAI-0002B plan approval
+  rule: >
+    execution_authorized flips to true ONLY after step 5. Product repos are worked on a dedicated
+    branch per repo; nothing is committed/pushed until all steps pass.
+
+promotion:
+  target: none                     # this job changes product repos directly (gated), not repo_control
+  agent_may_promote: false
+
+memory_updates:
+  - memory/decisions.md
+  - memory/lessons_learned.md
+  - memory/failure_taxonomy.yaml    # on any failed gate or rollback
