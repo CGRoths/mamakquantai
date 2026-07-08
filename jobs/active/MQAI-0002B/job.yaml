@@ -1,0 +1,88 @@
+id: MQAI-0002B
+title: Security Remediation Plan and Patch Proposal
+status: pending            # pending | running | review | approved | failed
+risk_tier: HIGH            # secrets/auth + git-history considerations = HIGH
+consensus_mode: high       # HIGH: Codex plan + Claude plan + GPT synthesis + gates + Cray approval
+
+parent_job: MQAI-0002       # findings source (audit, approved & closed)
+context:
+  - PyPI recovery codes ALREADY ROTATED manually by Cray (incident action done).
+  - MQAI-0002 closed and pushed.
+  - This job is PLANNING / PATCH PROPOSAL ONLY. No execution.
+
+scope:
+  mode: planning-only
+  product_repo_writes: false        # planning phase: no writes to any product repo
+  remediation_execution: false      # NO fixes applied in this job
+  patch_proposal_only: true
+  allowed_actions: [read, plan, propose, git-metadata-inspection]
+  forbidden_actions:
+    - remediation_execution
+    - write_product_repo
+    - edit_mqengine
+    - edit_mqnode_cloud
+    - delete_files
+    - git_history_rewrite
+    - open_secret_files
+    - print_secret_values
+    - commit
+    - push
+
+targets:
+  - repo: mqengine
+    path: C:\MAMAKQUANT\mqengine_lib_full
+    scope: full
+  - repo: mqnode_cloud
+    path: C:\MAMAKQUANT\mqnode_cloud
+    scope: full
+  - repo: mqnode_test2
+    path: C:\MAMAKQUANT\mqnode_test2
+    scope: full
+  - repo: mamakquantchainintel
+    path: C:\MAMAKQUANT\mamakquantchain\mqchain-console
+    scope: mqchain-console-only
+
+plan_must_cover:
+  1: Remove tracked PyPI-Recovery-Codes-*.txt from mqengine current tree (git rm --cached).
+  2: Add .gitignore coverage to mqengine.
+  3: Add .gitignore coverage to mqnode_cloud.
+  4: Confirm mqnode_test2/.env remains untracked and gitignored.
+  5: Confirm mqchain-console/.env.local remains untracked and gitignored.
+  6: Re-audit after remediation.
+  7: Optional history-purge plan — DOCUMENT ONLY, do NOT execute.
+
+builder: codex
+reviewer: claude
+synthesizer: gpt            # HIGH consensus requires GPT synthesis of the two plans
+
+write_allow:
+  - jobs/active/MQAI-0002B/output/**
+review_write_allow:
+  - jobs/active/MQAI-0002B/review/**
+
+deliverables:
+  - output/remediation_plan.md
+  - output/proposed_file_changes.md
+  - output/validation_checklist.md
+
+eval_gates:
+  - risk_tier_assignment
+  - write_scope_check
+  - secret_scan
+  - cross_layer_violation_check
+  # formula_diff_check / migration_required_check / lookahead_safety_check: n/a (planning only)
+
+promotion:
+  target: none              # this job produces an approved plan; execution is a later job
+  requires: [evals_pass, claude_approve, cray_approve]
+  agent_may_promote: false
+
+execution_boundary:
+  note: >
+    Approval of this job approves the PLAN only. Actual remediation (product-repo writes,
+    .gitignore commits, file removal, and any optional history purge) must be a SEPARATE
+    execution job with its own HIGH-tier consensus and explicit Cray authorization.
+
+memory_updates:
+  - memory/decisions.md
+  - memory/lessons_learned.md
