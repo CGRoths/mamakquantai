@@ -10,7 +10,7 @@ C:\MAMAKQUANT\mamakquantai
 
 ## Target repo local clone paths
 
-> TBD — Cray to confirm. GitHub references are under `CGRoths/` (confirm vs `MAMAKQUANT`).
+> STATUS: local paths locked for MQAI-0001. GitHub references are under `CGRoths/`.
 
 | Repo | Layer | GitHub | Local clone path |
 |------|-------|--------|------------------|
@@ -28,8 +28,9 @@ C:\MAMAKQUANT\mamakquantai
 
 - PowerShell (Windows) — primary orchestrator shell.
 - Git — for read-only repo access.
-- Codex CLI — `TBD` (invocation command / auth).
-- Claude CLI — `TBD` (invocation command / auth).
+- Codex CLI — not wired yet in V0. Codex role is planned, but current execution is semi-manual.
+- Claude Code — current active agent tool. Used manually by Cray for file creation, skeleton patches, and controlled MQAI work.
+- Claude CLI headless mode — not wired yet. Future target: `claude -p` or equivalent headless invocation after smoke validation.
 - Secret scanner — V0 uses regex/entropy via `evals/scripts/secret_scan.ps1`
   (gitleaks/trufflehog optional, V1).
 
