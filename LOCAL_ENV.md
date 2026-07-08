@@ -14,10 +14,10 @@ C:\MAMAKQUANT\mamakquantai
 
 | Repo | Layer | GitHub | Local clone path |
 |------|-------|--------|------------------|
-| mqnode_test2 | MQNODE (data truth, protected baseline) | github.com/CGRoths/mqnode_test2 | `TBD` |
-| mqnode_cloud | MQNODE (cloud feeder) | github.com/CGRoths/mqnode_cloud | `TBD` |
-| mqengine | MQENGINE (research validation) | github.com/CGRoths/mqengine | `TBD` |
-| mamakquantchainintel | MQCHAIN (label truth) | github.com/CGRoths/mamakquantchainintel | `TBD` |
+| mqnode_test2 | MQNODE (data truth, protected baseline) | github.com/CGRoths/mqnode_test2 | C:\MAMAKQUANT\mqnode_test2 |
+| mqnode_cloud | MQNODE (cloud feeder) | github.com/CGRoths/mqnode_cloud | C:\MAMAKQUANT\mqnode_cloud |
+| mqengine | MQENGINE (research validation) | github.com/CGRoths/mqengine | C:\MAMAKQUANT\mqengine_lib_full |
+| mamakquantchainintel | MQCHAIN (label truth) | github.com/CGRoths/mamakquantchainintel | C:\MAMAKQUANT\mamakquantchain|
 
 ### MQAI-0001 scope note
 
