@@ -1,0 +1,25 @@
+### mqengine (git diff --cached --stat) [base: chore/mqai-0002c-sechygiene off main]
+ .gitignore                                         |  23 +++++++++++++++++++++
+ ...y-Codes-CrayNg05-2026-04-16T20_23_27.926753.txt |   8 -------
+ mqengine.egg-info/PKG-INFO                         |   9 --------
+ mqengine.egg-info/SOURCES.txt                      |  17 ---------------
+ mqengine.egg-info/dependency_links.txt             |   1 -
+ mqengine.egg-info/requires.txt                     |   3 ---
+ mqengine.egg-info/top_level.txt                    |   1 -
+ mqengine/__pycache__/__init__.cpython-311.pyc      | Bin 1022 -> 0 bytes
+ mqengine/__pycache__/conditions.cpython-311.pyc    | Bin 5770 -> 0 bytes
+ mqengine/__pycache__/dashboard.cpython-311.pyc     | Bin 20471 -> 0 bytes
+ mqengine/__pycache__/engine.cpython-311.pyc        | Bin 23637 -> 0 bytes
+ mqengine/__pycache__/facade.cpython-311.pyc        | Bin 1740 -> 0 bytes
+ mqengine/__pycache__/io_sql.cpython-311.pyc        | Bin 6269 -> 0 bytes
+ mqengine/__pycache__/metrics.cpython-311.pyc       | Bin 5710 -> 0 bytes
+ mqengine/__pycache__/result.cpython-311.pyc        | Bin 16486 -> 0 bytes
+ mqengine/__pycache__/sweep.cpython-311.pyc         | Bin 6133 -> 0 bytes
+ mqengine/__pycache__/transforms.cpython-311.pyc    | Bin 6283 -> 0 bytes
+ mqengine/__pycache__/types.cpython-311.pyc         | Bin 2328 -> 0 bytes
+ 18 files changed, 23 insertions(+), 39 deletions(-)
+
+### mqnode_cloud (git diff --cached --stat) [base: chore/mqai-0002c-sechygiene off main]
+ .gitignore | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+

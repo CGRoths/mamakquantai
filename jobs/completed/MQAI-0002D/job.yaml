@@ -1,0 +1,43 @@
+job_id: MQAI-0002D
+title: Security Re-Audit (read-only, post-remediation)
+risk_tier: HIGH
+status: completed
+objective: >
+  Read-only verification that MQAI-0002C remediation stuck: recovery file untracked, .gitignore
+  present, generated artifacts removed from HEAD, env files still ignored/untracked, tracked-source
+  secret scan clean. No writes, no remediation, no secret-content inspection.
+
+parent_job: MQAI-0002C
+
+execution_authorized: false
+commit_authorized: false
+product_repo_writes_allowed: false
+push_authorized: false
+
+target_repos:
+  - mqengine
+  - mqnode_cloud
+  - mqnode_test2
+  - mamakquantchainintel
+
+gates:
+  - plan
+  - validation
+  - closeout
+
+allowed_writes:
+  - jobs/active/MQAI-0002D/**
+
+forbidden_writes:
+  - C:/MAMAKQUANT/mqnode_test2/**
+  - C:/MAMAKQUANT/mqnode_cloud/**
+  - C:/MAMAKQUANT/mqengine_lib_full/**
+  - C:/MAMAKQUANT/mamakquantchain/**
+
+success_criteria:
+  - recovery file untracked in mqengine HEAD
+  - mqengine and mqnode_cloud .gitignore present
+  - generated artifacts removed from mqengine HEAD
+  - env files remain ignored/untracked
+  - tracked-source secret scan clean
+  - no secret values captured

@@ -1,0 +1,4 @@
+# mqnode_cloud  branch=chore/mqai-0002c-sechygiene head=aad7187
+A  .gitignore
+ M README.md
+ M binance_cloud_price_feeder.py

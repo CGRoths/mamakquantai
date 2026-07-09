@@ -4,6 +4,18 @@ Durable decisions and their rationale. Append-only; newest at top.
 
 ---
 
+## 2026-07-09 — MQAI-0002C committed (local) & closed; MQAI-0002D opened
+
+- **MQAI-0002C security remediation committed locally and closed** to `jobs/completed/`.
+  mqengine `62c4243` (untrack recovery file + 5 egg-info + 11 `.pyc`, add `.gitignore`, off `main`),
+  mqnode_cloud `4b0e7ae` (add `.gitignore`, off `main`). Closeout re-guard **V9 PASS / V10 PASS**.
+- **No push, no history rewrite, no secret inspection.** Local commits sit on
+  `chore/mqai-0002c-sechygiene` branches; push/merge is a separate, explicitly-authorized decision.
+- **Recovery file** remains on disk (untracked, ignored, rotated/inert); untracked in HEAD.
+- **MQAI-0002D** (read-only security re-audit) opened to verify the remediation stuck.
+
+---
+
 ## 2026-07-09 — MQAI-0005: handoff / resume protocol added
 
 - **MQAI-0005 handoff/resume protocol added** (additive patch): `orchestrator/handoff.py` + CLI

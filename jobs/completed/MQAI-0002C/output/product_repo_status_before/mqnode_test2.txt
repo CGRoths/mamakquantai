@@ -1,0 +1,6 @@
+# repo: mqnode_test2
+# path: C:/MAMAKQUANT/mqnode_test2
+# branch: main
+# head:   4207b66
+# --- git status --porcelain ---
+ M docker-compose.yml

@@ -1,0 +1,5 @@
+# repo: mqchain-console
+# path: C:/MAMAKQUANT/mamakquantchain/mqchain-console
+# branch: main
+# head:   e84cd92
+# --- git status --porcelain ---

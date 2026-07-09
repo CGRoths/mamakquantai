@@ -1,0 +1,29 @@
+diff --git a/.gitignore b/.gitignore
+new file mode 100644
+index 0000000..3fbaa86
+--- /dev/null
++++ b/.gitignore
+@@ -0,0 +1,23 @@
++# --- Recovery codes (anchored to the known filename shape) ---
++/PyPI-Recovery-Codes*.txt
++/pypi-recovery-codes*.txt
++
++# --- Secrets / credentials (never commit) ---
++.env
++.env.*
++!.env.example
++*.pem
++*.key
++*.p12
++*.pfx
++*.secret
++*.token
++
++# --- Python build / cache noise ---
++__pycache__/
++*.pyc
++*.egg-info/
++.pytest_cache/
++.ruff_cache/
++build/
++dist/

@@ -1,0 +1,44 @@
+# repo: mqengine
+# path: C:/MAMAKQUANT/mqengine_lib_full
+# branch: feature/research-metrics-adrs-oos
+# head:   c2d5d40
+# --- git status --porcelain ---
+ M mqengine.egg-info/PKG-INFO
+ M mqengine.egg-info/SOURCES.txt
+ M mqengine/__pycache__/__init__.cpython-311.pyc
+ M mqengine/__pycache__/engine.cpython-311.pyc
+ M mqengine/__pycache__/facade.cpython-311.pyc
+ M mqengine/__pycache__/io_sql.cpython-311.pyc
+ M mqengine/__pycache__/metrics.cpython-311.pyc
+ M mqengine/__pycache__/result.cpython-311.pyc
+ M mqengine/__pycache__/sweep.cpython-311.pyc
+?? mqengine/__pycache__/__init__.cpython-314.pyc
+?? mqengine/__pycache__/alignment.cpython-311.pyc
+?? mqengine/__pycache__/alignment.cpython-314.pyc
+?? mqengine/__pycache__/conditions.cpython-314.pyc
+?? mqengine/__pycache__/engine.cpython-314.pyc
+?? mqengine/__pycache__/facade.cpython-314.pyc
+?? mqengine/__pycache__/io_sql.cpython-314.pyc
+?? mqengine/__pycache__/metrics.cpython-314.pyc
+?? mqengine/__pycache__/montecarlo.cpython-311.pyc
+?? mqengine/__pycache__/montecarlo.cpython-314.pyc
+?? mqengine/__pycache__/oms_analytics.cpython-311.pyc
+?? mqengine/__pycache__/oms_analytics.cpython-314.pyc
+?? mqengine/__pycache__/portfolio.cpython-311.pyc
+?? mqengine/__pycache__/portfolio.cpython-314.pyc
+?? mqengine/__pycache__/research.cpython-311.pyc
+?? mqengine/__pycache__/research.cpython-314.pyc
+?? mqengine/__pycache__/result.cpython-314.pyc
+?? mqengine/__pycache__/risk.cpython-311.pyc
+?? mqengine/__pycache__/risk.cpython-314.pyc
+?? mqengine/__pycache__/schemas.cpython-311.pyc
+?? mqengine/__pycache__/schemas.cpython-314.pyc
+?? mqengine/__pycache__/stability.cpython-311.pyc
+?? mqengine/__pycache__/stability.cpython-314.pyc
+?? mqengine/__pycache__/sweep.cpython-314.pyc
+?? mqengine/__pycache__/transforms.cpython-314.pyc
+?? mqengine/__pycache__/types.cpython-314.pyc
+?? mqengine/__pycache__/validation.cpython-311.pyc
+?? mqengine/__pycache__/validation.cpython-314.pyc
+?? mqengine/__pycache__/vectorized.cpython-311.pyc
+?? mqengine/__pycache__/vectorized.cpython-314.pyc

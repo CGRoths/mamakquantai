@@ -4,6 +4,26 @@ What worked / what didn't, per job. Append-only; newest at top.
 
 ---
 
+## MQAI-0002C closeout + MQAI-0002D re-audit
+
+- **What worked:**
+  - A read-only re-audit (MQAI-0002D) after remediation closed the loop objectively: verified the
+    CRITICAL exposure is resolved on the remediation branch (recovery untracked+ignored, artifacts
+    gone from HEAD, .gitignore present, tracked-source scan clean) without reading any secret.
+  - Re-running V9/V10 at closeout (against committed diffs, not just staged) caught nothing new and
+    gave a clean audit trail.
+- **What didn't / friction:**
+  - My closeout guard grep used `grep -l` then tried to filter `.md:` — `-l` output has no colon, so
+    two benign prose mentions of "diff --git" false-flagged. Triaged by checking for hunk headers
+    (`@@`) — none. Lesson: when scanning for leaks, distinguish real diff blocks from inline prose.
+- **Change to process:**
+  - Every product-repo remediation should be followed by a read-only re-audit job (pattern:
+    0002 audit → 0002B plan → 0002C execute → 0002D re-audit).
+  - Remediation committed to a branch is "resolved on branch"; full closure needs a separate,
+    explicitly-authorized merge/push — keep that distinction explicit.
+
+---
+
 ## MQAI-0005 — Handoff / Resume patch (additive)
 
 - **What worked:**

@@ -1,0 +1,110 @@
+id: MQAI-0002C
+title: Security Remediation Execution
+status: completed             # active (Gate A granted 2026-07-09; branch-local work permitted; Gate B pending)
+risk_tier: HIGH            # product-repo writes to secrets/auth surface + git-history = HIGH
+consensus_mode: high       # Codex plan + Claude plan + GPT synthesis + gates + Cray approval
+
+parent_jobs:
+  - MQAI-0002               # audit (findings source)
+  - MQAI-0002B              # approved remediation PLAN (approve_plan_only)
+
+context:
+  - PyPI recovery codes ALREADY ROTATED by Cray (incident action complete).
+  - This job EXECUTES the MQAI-0002B-approved plan against product repos.
+  - SCAFFOLD ONLY at creation. Execution is BLOCKED until Cray separately approves (see gating).
+
+scope:
+  mode: execution
+  two_gate_model: true
+  product_repo_writes: true          # branch-local ONLY, and ONLY after Gate A
+  execution_authorized: true         # === Gate A GRANTED 2026-07-09 (see review/cray_execution_approval.md) === branch-local work only
+  commit_authorized: true            # === Gate B GRANTED 2026-07-09 (see review/cray_final_approval.md) === commit approved staged paths only; NO push
+  secret_content_inspection: false   # never read/print/copy secret values
+  allowed_actions:
+    - read
+    - git-metadata-inspection
+    - propose
+    - "gate A: create remediation branch; create .gitignore; git rm --cached (index); stage; diff"
+    - "gate B: commit (push only if separately authorized)"
+  forbidden_actions:
+    - branch_local_write_before_gate_A     # no .gitignore create / git rm --cached before Gate A
+    - commit_or_push_before_gate_B         # branch work never auto-implies commit
+    - open_secret_files
+    - print_secret_values
+    - copy_secret_contents
+    - disk_deletion_of_preexisting_files   # git rm --cached is index-only; see rollback_plan for job-created files
+    - git_history_rewrite                  # RP7 purge is a separate, separately-authorized action
+
+targets:
+  - repo: mqengine
+    path: C:\MAMAKQUANT\mqengine_lib_full
+    remote: github.com/CGRoths/mqengine
+    changes: [remove_tracked_recovery_file, add_gitignore, untrack_generated_artifacts]
+  - repo: mqnode_cloud
+    path: C:\MAMAKQUANT\mqnode_cloud
+    remote: github.com/CGRoths/mqnode_cloud
+    changes: [add_gitignore]
+  - repo: mqnode_test2
+    path: C:\MAMAKQUANT\mqnode_test2
+    remote: github.com/CGRoths/mqnode_test2
+    changes: [confirm_only]           # .env already ignored+untracked; NO change
+  - repo: mamakquantchainintel
+    path: C:\MAMAKQUANT\mamakquantchain\mqchain-console
+    remote: github.com/CGRoths/mamakquantchainintel
+    changes: [confirm_only]           # .env.local already ignored+untracked; NO change
+
+artifacts:
+  - allowed_writes.md
+  - forbidden_actions.md
+  - execution_plan.md
+  - validation_plan.md
+  - rollback_plan.md
+  - review/review_requirements.md
+
+builder: codex
+reviewer: claude
+synthesizer: gpt
+
+eval_gates:
+  - risk_tier_assignment
+  - write_scope_check
+  - secret_scan
+  - cross_layer_violation_check
+  - migration_required_check      # n/a expected (no schema), but run to confirm
+  # formula_diff_check / lookahead_safety_check: n/a (hygiene-only changes)
+
+gating:
+  model: two-gate
+  gate_A_execution_approval:         # authorizes BRANCH-LOCAL remediation work ONLY (no commit/push)
+    grants:
+      - create a dedicated remediation branch per target repo
+      - create/remediate files on that branch (.gitignore create; git rm --cached index changes)
+      - stage changes and capture the actual diff for review
+    does_not_grant: [commit, push]
+    preconditions:
+      1: scaffold_reviewed            # W1-W4 fixes applied
+      2: eval_gates_pass
+      3: claude_review_approve        # review of the PROPOSED execution (this scaffold)
+      4: cray_execution_approval      # === Gate A === (explicit, separate from MQAI-0002B plan approval)
+    effect: "execution_authorized -> true (branch-local work only)"
+  gate_B_final_approval:             # authorizes COMMIT/PUSH of remediation changes
+    preconditions:
+      1: validation_pass              # V1-V10 in validation_plan.md, incl. V9 path guard + V10 secret-safe/no-leak
+      2: claude_review_executed       # review of the ACTUAL staged diff; must match approved plan
+      3: gpt_synthesis_approve
+      4: cray_final_approval          # === Gate B === (explicit)
+    effect: "commit_authorized -> true; then commit (push only if separately authorized)"
+  rule: >
+    execution_authorized gates ALL product-repo writes; commit_authorized gates commit/push.
+    CURRENT STATE (2026-07-09): execution_authorized=true (Gate A) AND commit_authorized=true
+    (Gate B granted -> commit of approved staged paths only, after a final V9/V10 guard). Still NO
+    push unless separately authorized; NO history rewrite; NO git add -A; NO out-of-scope paths.
+
+promotion:
+  target: none                     # this job changes product repos directly (gated), not repo_control
+  agent_may_promote: false
+
+memory_updates:
+  - memory/decisions.md
+  - memory/lessons_learned.md
+  - memory/failure_taxonomy.yaml    # on any failed gate or rollback

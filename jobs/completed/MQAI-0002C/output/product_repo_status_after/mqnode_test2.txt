@@ -1,0 +1,2 @@
+# mqnode_test2  branch=main head=4207b66
+ M docker-compose.yml

@@ -1,0 +1,23 @@
+### mqengine (git diff --cached --name-only) [base: chore/mqai-0002c-sechygiene off main]
+.gitignore
+PyPI-Recovery-Codes-CrayNg05-2026-04-16T20_23_27.926753.txt
+mqengine.egg-info/PKG-INFO
+mqengine.egg-info/SOURCES.txt
+mqengine.egg-info/dependency_links.txt
+mqengine.egg-info/requires.txt
+mqengine.egg-info/top_level.txt
+mqengine/__pycache__/__init__.cpython-311.pyc
+mqengine/__pycache__/conditions.cpython-311.pyc
+mqengine/__pycache__/dashboard.cpython-311.pyc
+mqengine/__pycache__/engine.cpython-311.pyc
+mqengine/__pycache__/facade.cpython-311.pyc
+mqengine/__pycache__/io_sql.cpython-311.pyc
+mqengine/__pycache__/metrics.cpython-311.pyc
+mqengine/__pycache__/result.cpython-311.pyc
+mqengine/__pycache__/sweep.cpython-311.pyc
+mqengine/__pycache__/transforms.cpython-311.pyc
+mqengine/__pycache__/types.cpython-311.pyc
+
+### mqnode_cloud (git diff --cached --name-only) [base: chore/mqai-0002c-sechygiene off main]
+.gitignore
+

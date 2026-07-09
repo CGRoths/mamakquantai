@@ -1,0 +1,7 @@
+# repo: mqnode_cloud
+# path: C:/MAMAKQUANT/mqnode_cloud
+# branch: main
+# head:   aad7187
+# --- git status --porcelain ---
+ M README.md
+ M binance_cloud_price_feeder.py
