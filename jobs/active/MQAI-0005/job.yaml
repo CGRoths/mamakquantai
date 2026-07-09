@@ -1,0 +1,57 @@
+job_id: MQAI-0005
+title: MQAI Production Control Plane MVP
+risk_tier: HIGH
+status: active
+objective: >
+  Build the first production-usable local MQAI orchestrator that reduces manual
+  Cray/GPT/Claude relay by adding job state detection, gate policy, context pack
+  generation, compact reporting, eval runner wrappers, reusable agent prompt
+  generation, and a PowerShell CLI wrapper.
+
+execution_authorized: true
+commit_authorized: false
+product_repo_writes_allowed: false
+push_authorized: false
+
+target_repos: []
+
+gates:
+  - plan
+  - execution
+  - validation
+  - executed_diff_review
+  - synthesis
+  - final_commit
+  - push
+  - closeout
+
+allowed_writes:
+  - orchestrator/**
+  - commands/**
+  - templates/**
+  - skills/**
+  - evals/scripts/**
+  - docs/**
+  - tests/**
+  - jobs/active/MQAI-0005/**
+  - memory/decisions.md
+  - memory/lessons_learned.md
+
+forbidden_writes:
+  - C:/MAMAKQUANT/mqnode_test2/**
+  - C:/MAMAKQUANT/mqnode_cloud/**
+  - C:/MAMAKQUANT/mqengine_lib_full/**
+  - C:/MAMAKQUANT/mamakquantchain/**
+
+success_criteria:
+  - mqai status works
+  - mqai next works
+  - mqai context works
+  - mqai report works
+  - mqai prompts works
+  - mqai eval works or reports skipped gates honestly
+  - python -m unittest discover tests passes
+  - compact report generated for MQAI-0005
+  - no product repo writes
+  - no secrets printed
+  - no push

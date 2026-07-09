@@ -1,0 +1,26 @@
+job_id: FIX-HIGH-SEC
+title: Security remediation (fixture)
+risk_tier: HIGH
+status: active
+objective: Remove tracked secret-like files and add gitignore in a product repo (fixture).
+execution_authorized: true
+commit_authorized: false
+product_repo_writes_allowed: true
+push_authorized: false
+target_repos:
+  - fix_product_repo
+gates:
+  - plan
+  - execution
+  - validation
+  - executed_diff_review
+  - synthesis
+  - final_commit
+  - closeout
+allowed_writes:
+  - .gitignore
+forbidden_writes:
+  - C:/MAMAKQUANT/mqnode_test2/**
+success_criteria:
+  - tracked secret-like file untracked
+  - gitignore added

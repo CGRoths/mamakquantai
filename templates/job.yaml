@@ -1,0 +1,31 @@
+# MQAI job template (copy to jobs/active/<JOB_ID>/job.yaml). Authored within the minimal_yaml subset.
+job_id: MQAI-XXXX
+title: <short title>
+risk_tier: LOW            # LOW | MEDIUM | HIGH | CRITICAL
+status: active            # active | completed | failed | blocked
+objective: >
+  <one-paragraph objective; folded block scalar is fine>
+
+execution_authorized: false
+commit_authorized: false
+product_repo_writes_allowed: false
+push_authorized: false
+
+target_repos: []          # list of product repo names, or [] for MQAI-local jobs
+
+gates:
+  - plan
+  - validation
+  - closeout             # add execution/executed_diff_review/synthesis/final_commit for MEDIUM+/HIGH
+
+allowed_writes:
+  - jobs/active/MQAI-XXXX/**
+
+forbidden_writes:
+  - C:/MAMAKQUANT/mqnode_test2/**
+  - C:/MAMAKQUANT/mqnode_cloud/**
+  - C:/MAMAKQUANT/mqengine_lib_full/**
+  - C:/MAMAKQUANT/mamakquantchain/**
+
+success_criteria:
+  - <criterion>

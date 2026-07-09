@@ -1,0 +1,50 @@
+[
+  {
+    "gate": "risk_tier_assignment",
+    "status": "pass",
+    "detail": "tier=HIGH",
+    "data": {
+      "tier": "HIGH"
+    }
+  },
+  {
+    "gate": "write_scope_check",
+    "status": "pass",
+    "detail": "allowed_writes present; no unauthorized product paths",
+    "data": {
+      "allowed_writes": [
+        "orchestrator/**",
+        "commands/**",
+        "templates/**",
+        "skills/**",
+        "evals/scripts/**",
+        "docs/**",
+        "tests/**",
+        "jobs/active/MQAI-0005/**",
+        "memory/decisions.md",
+        "memory/lessons_learned.md"
+      ]
+    }
+  },
+  {
+    "gate": "secret_scan",
+    "status": "pass",
+    "detail": "no secret-shape values in job output/review",
+    "data": {
+      "hit_count": 0,
+      "hits": []
+    }
+  },
+  {
+    "gate": "touched_path_check",
+    "status": "skipped",
+    "detail": "no output/touched_paths.txt",
+    "data": {}
+  },
+  {
+    "gate": "git_status_capture",
+    "status": "skipped",
+    "detail": "no target_repos to capture",
+    "data": {}
+  }
+]

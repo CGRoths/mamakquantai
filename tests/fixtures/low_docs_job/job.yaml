@@ -1,0 +1,21 @@
+job_id: FIX-LOW-DOCS
+title: Docs update (fixture)
+risk_tier: LOW
+status: active
+objective: Update README and docs; MQAI-local only.
+execution_authorized: false
+commit_authorized: false
+product_repo_writes_allowed: false
+push_authorized: false
+target_repos: []
+gates:
+  - plan
+  - validation
+  - closeout
+allowed_writes:
+  - docs/**
+  - README.md
+forbidden_writes:
+  - C:/MAMAKQUANT/mqnode_test2/**
+success_criteria:
+  - docs updated

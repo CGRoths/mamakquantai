@@ -1,0 +1,23 @@
+job_id: FIX-MED-PATCH
+title: Code patch (fixture)
+risk_tier: MEDIUM
+status: active
+objective: Apply a small code patch in a product repo behind gates (fixture).
+execution_authorized: true
+commit_authorized: false
+product_repo_writes_allowed: true
+push_authorized: false
+target_repos:
+  - fix_product_repo
+gates:
+  - plan
+  - validation
+  - executed_diff_review
+  - final_commit
+  - closeout
+allowed_writes:
+  - src/**
+forbidden_writes:
+  - C:/MAMAKQUANT/mqnode_test2/**
+success_criteria:
+  - patch applied behind gates

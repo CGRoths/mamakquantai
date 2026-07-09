@@ -4,6 +4,44 @@ What worked / what didn't, per job. Append-only; newest at top.
 
 ---
 
+## MQAI-0005 — Handoff / Resume patch (additive)
+
+- **What worked:**
+  - A `handoff_state.json` sidecar made handoff detection robust and let the compact report/context
+    pack surface `handoff_ready`, `recommended_next_agent`, `last_stop_reason` without brittle text parsing.
+  - Additive-only edits (new module + insertions) kept the MVP spine intact; all 23 tests green.
+  - Exercising the CLI in-process (`mqai_runner.main(argv)` with captured stdout) gave fast, network-free
+    smoke tests for `handoff`/`resume`.
+- **What didn't / friction:**
+  - argparse `--from` collides with the Python keyword; used `dest="from_agent"`.
+- **Change to process:**
+  - Continuity is a first-class MQAI feature now: every future job can be resumed from files.
+  - Keep reinforcing "agents don't share memory / don't rely on chat history" in generated prompts.
+  - Do not overstate wiring: handoff is file/prompt continuity, not agent execution.
+
+---
+
+## MQAI-0005 — Production Control Plane MVP (build pass)
+
+- **What worked:**
+  - A generic, artifact-driven state machine + gate policy compresses the manual relay loop into
+    `mqai status/next/run` while staying file-first and auditable.
+  - Fixtures (LOW/MEDIUM/HIGH) resolving to 3 distinct states caught the risk of hardcoding to one
+    job — a cheap, high-value anti-overfitting guard.
+  - Python-native eval gates (vs shelling PowerShell) are deterministic and testable; honest
+    `skipped` beats fake pass.
+- **What didn't / friction:**
+  - Windows console choked on an em-dash in a status string → switched to ASCII `->`. Keep runner
+    output ASCII-safe.
+  - Generic `approve` artifacts had to be added to state-inference globs, else approvals didn't
+    advance state. State detection and approval naming must stay in sync.
+- **Change to process:**
+  - Keep MQAI runner output ASCII-only for Windows consoles.
+  - When adding an approval path, update `job_state` globs + `gate_policy` together.
+  - Treat "not wired yet" (agent APIs) as a first-class documented limit, never implied capability.
+
+---
+
 ## MQAI-0002B — Security Remediation Plan (planning-only, HIGH-tier)
 
 - **What worked:**

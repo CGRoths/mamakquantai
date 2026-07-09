@@ -1,0 +1,19 @@
+# Gate-state template (illustrative; MQAI infers live state at runtime, this is a readable snapshot).
+job_id: MQAI-XXXX
+risk_tier: HIGH
+current_state: scaffolded
+gates:
+  plan: pending                 # done | pending | awaiting_approval | na | blocked
+  execution: pending
+  validation: pending
+  executed_diff_review: pending
+  synthesis: pending
+  final_commit: pending
+  push: na                      # never inferred; separate explicit authorization
+  closeout: pending
+next_gate: plan
+human_required: false
+blocked_actions:
+  - product-repo writes (no execution approval)
+  - commit of product-repo changes (no final approval)
+  - push (never inferred)

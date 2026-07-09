@@ -1,0 +1,9 @@
+{
+  "job_id": "MQAI-0005",
+  "from_agent": "codex",
+  "to_agent": "claude",
+  "recommended_next_agent": "claude",
+  "stop_reason": "context_exhausted",
+  "created": "2026-07-09T15:00:33",
+  "current_state": "execution_authorized"
+}

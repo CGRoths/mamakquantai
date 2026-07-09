@@ -4,6 +4,38 @@ Durable decisions and their rationale. Append-only; newest at top.
 
 ---
 
+## 2026-07-09 — MQAI-0005: handoff / resume protocol added
+
+- **MQAI-0005 handoff/resume protocol added** (additive patch): `orchestrator/handoff.py` + CLI
+  `handoff`/`resume` commands + templates + skill + docs + tests.
+- **Agents can now resume from files instead of chat memory** — `output/handoff/{latest_handoff,
+  <from>_to_<to>,resume_prompt}.md` + `handoff_state.json`; compact report + context pack surface
+  handoff state; stop-reason classified (context_exhausted, quota_exhausted, tool_error,
+  validation_failed, human_approval_required, hard_stop_triggered, unknown).
+- **This is prompt/file-level continuity, NOT automatic agent execution.** Claude/Codex/OpenRouter
+  are still not wired; a human (or a future adapter) hands the resume prompt to the agent.
+- Core rule reaffirmed: MQAI owns memory/state/rules/gates/handoff; agents are temporary compute;
+  Cray is final risk owner. Tests: 23 pass. No product writes, no push.
+
+---
+
+## 2026-07-09 — MQAI-0005: production control-plane MVP created
+
+- **MQAI-0005 created to reduce manual Cray/GPT/Claude prompt relay.** Built a file-first, stdlib-only
+  local orchestrator (`orchestrator/` + `commands/mqai.ps1`) with job-state detection, gate policy,
+  context-pack + compact-report generation, agent-prompt generation, and a local eval runner.
+- **V1 orchestration remains file-first and non-autonomous.** All state is visible in files; no DB,
+  no dashboard, no network.
+- **Claude/Codex/OpenRouter execution is NOT wired yet** — MQAI generates prompt files for manual/CLI
+  use. This is stated honestly in `docs/known_limits.md`; do not claim autonomy.
+- **Product-repo writes remain gated by explicit job permissions;** the control-plane runner never
+  pushes, rewrites history, inspects secrets, or writes product repos.
+- **Compact reporting and generic (non-hardcoded) state detection are now first-class MQAI features**,
+  proven by LOW/MEDIUM/HIGH fixtures resolving to distinct states. `push` is always a separate gate,
+  never inferred from commit approval.
+
+---
+
 ## 2026-07-09 — MQAI-0002B approved (plan-only) & closed
 
 - **MQAI-0002B (Security Remediation Plan) closed with `DECISION: approve_plan_only`.** Moved to
